@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Chaudhary Heritage Group – Luxury Wedding Venues</title>
+  <meta name="description" content="The Chaudhary Heritage Group – Luxury wedding venues and timeless celebrations. Chaudhary Garden, Chaudhary Guest House & the upcoming CHG Signature Venue." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              100: '#f9f0d4',
+              200: '#f0d98a',
+              300: '#e8c84a',
+              400: '#d4a017',
+              500: '#c8960c',
+              600: '#b8860b',
+              700: '#9a7209',
+              800: '#7a5a06',
+              900: '#5a4204',
+            },
+            ivory: {
+              50:  '#fdfaf4',
+              100: '#faf5e8',
+              200: '#f5ecd0',
+              300: '#ede0b8',
+            },
+            obsidian: '#0a0a0a',
+          },
+          fontFamily: {
+            serif:  ['Cormorant Garamond', 'Georgia', 'serif'],
+            display: ['Cinzel', 'serif'],
+            sans:   ['Jost', 'sans-serif'],
+          },
+          backgroundImage: {
+            'gold-gradient': 'linear-gradient(135deg, #c8960c 0%, #f0d98a 40%, #d4a017 60%, #b8860b 100%)',
+            'gold-gradient-v': 'linear-gradient(180deg, #c8960c 0%, #f0d98a 50%, #b8860b 100%)',
+          },
+          animation: {
+            'shimmer': 'shimmer 3s linear infinite',
+            'float':   'float 6s ease-in-out infinite',
+            'pulse-gold': 'pulseGold 2s ease-in-out infinite',
+          },
+          keyframes: {
+            shimmer: {
+              '0%':   { backgroundPosition: '-200% center' },
+              '100%': { backgroundPosition:  '200% center' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%':      { transform: 'translateY(-10px)' },
+            },
+            pulseGold: {
+              '0%, 100%': { opacity: '1', boxShadow: '0 0 20px rgba(200,150,12,0.3)' },
+              '50%':      { opacity: '0.8', boxShadow: '0 0 40px rgba(200,150,12,0.6)' },
+            },
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    /* ─────────────── BASE ─────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: #0a0a0a;
+      color: #faf5e8;
+      font-family: 'Jost', sans-serif;
+      overflow-x: hidden;
+    }
+    ::selection { background: rgba(200,150,12,0.3); color: #f0d98a; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #c8960c; border-radius: 2px; }
+
+    /* ─────────────── LOADING SCREEN ─────────────── */
+    #loading-screen {
+      position: fixed; inset: 0;
+      background: #050505;
+      z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    #loading-screen.fade-out { opacity: 0; visibility: hidden; }
+    #loading-canvas {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+    }
+    #loading-logo-wrapper {
+      position: relative; z-index: 10;
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
+    }
+    #loading-logo-img {
+      width: 150px; height: 150px;
+      object-fit: contain;
+      opacity: 0;
+      filter: drop-shadow(0 0 28px rgba(200,150,12,0.9)) drop-shadow(0 0 60px rgba(200,150,12,0.4));
+      transition: opacity 1.4s ease;
+      position: relative; z-index: 12;
+    }
+    #loading-logo-img.visible { opacity: 1; }
+    /* SVG logo assembly canvas — sits on top, fades out when PNG fades in */
+    #logo-assembly-canvas {
+      position: absolute;
+      z-index: 11;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+    }
+    #loading-brand-text {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      letter-spacing: 6px;
+      color: #c8960c;
+      opacity: 0;
+      transition: opacity 1.2s ease 0.3s;
+      text-transform: uppercase;
+    }
+    #loading-brand-text.visible { opacity: 1; }
+    #loading-progress {
+      position: absolute; bottom: 48px; left: 50%;
+      transform: translateX(-50%);
+      width: 180px; height: 1px;
+      background: rgba(200,150,12,0.15);
+    }
+    #loading-progress-bar {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #c8960c, #f0d98a, #c8960c);
+      transition: width 0.05s linear;
+      box-shadow: 0 0 8px rgba(200,150,12,0.7);
+    }
+
+    /* ─────────────── NOISE OVERLAY ─────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 1;
+      pointer-events: none;
+      opacity: 0.018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* ─────────────── NAV ─────────────── */
+    #main-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      transition: all 0.5s ease;
+      padding: 28px 60px;
+    }
+    #main-nav.scrolled {
+      background: rgba(5,5,5,0.92);
+      backdrop-filter: blur(20px);
+      padding: 18px 60px;
+      border-bottom: 1px solid rgba(200,150,12,0.12);
+    }
+    .nav-link {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(250,245,232,0.7);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: #c8960c;
+      transition: width 0.4s ease;
+    }
+    .nav-link:hover { color: #c8960c; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* ─────────────── HERO ─────────────── */
+    #hero {
+      position: relative;
+      height: 100vh; min-height: 700px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 70%, rgba(200,150,12,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse at 20% 20%, rgba(200,150,12,0.04) 0%, transparent 40%),
+        linear-gradient(180deg, rgba(5,5,5,0.3) 0%, rgba(5,5,5,0.1) 40%, rgba(5,5,5,0.6) 100%),
+        url('https://images.unsplash.com/photo-1519741497674-611481863552?w=2400&q=85&auto=format&fit=crop') center/cover no-repeat;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.25) 50%, rgba(5,5,5,0.75) 100%);
+    }
+    .hero-content { position: relative; z-index: 2; text-align: center; }
+    .hero-divider {
+      width: 1px; height: 60px;
+      background: linear-gradient(180deg, transparent, #c8960c, transparent);
+      margin: 0 auto;
+    }
+    .hero-subtitle-line {
+      display: flex; align-items: center; gap: 18px; justify-content: center;
+    }
+    .hero-subtitle-line span {
+      display: block; height: 1px; width: 50px;
+      background: linear-gradient(90deg, transparent, #c8960c);
+    }
+    .hero-subtitle-line span:last-child {
+      background: linear-gradient(90deg, #c8960c, transparent);
+    }
+
+    /* ─────────────── GOLD TEXT ─────────────── */
+    .gold-text {
+      background: linear-gradient(135deg, #c8960c 0%, #f0d98a 45%, #d4a017 55%, #b8860b 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gold-text-animated {
+      background: linear-gradient(135deg, #c8960c 0%, #f0d98a 45%, #d4a017 55%, #b8860b 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+
+    /* ─────────────── SECTION UTILS ─────────────── */
+    .section-label {
+      font-family: 'Jost', sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: #c8960c;
+    }
+    .ornament {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .ornament-line {
+      flex: 1; max-width: 80px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(200,150,12,0.5));
+    }
+    .ornament-line.right {
+      background: linear-gradient(90deg, rgba(200,150,12,0.5), transparent);
+    }
+    .ornament-diamond {
+      width: 5px; height: 5px;
+      background: #c8960c;
+      transform: rotate(45deg);
+    }
+
+    /* ─────────────── ABOUT ─────────────── */
+    #about { position: relative; overflow: hidden; }
+    .about-stat-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(180deg, transparent, #c8960c, transparent);
+    }
+
+    /* ─────────────── VENUE CARDS ─────────────── */
+    .venue-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .venue-card:hover { transform: translateY(-8px); }
+    .venue-card-img {
+      width: 100%; height: 380px;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .venue-card:hover .venue-card-img { transform: scale(1.06); }
+    .venue-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 30%, rgba(5,5,5,0.95) 100%);
+      transition: background 0.5s ease;
+    }
+    .venue-card:hover .venue-card-overlay {
+      background: linear-gradient(180deg, rgba(5,5,5,0.1) 0%, rgba(5,5,5,0.97) 100%);
+    }
+    .venue-card-content {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 32px;
+      transition: transform 0.5s ease;
+    }
+    .venue-card-detail {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.5s ease, opacity 0.5s ease;
+    }
+    .venue-card:hover .venue-card-detail { max-height: 120px; opacity: 1; }
+    .venue-card-border {
+      position: absolute; inset: 0;
+      border: 1px solid rgba(200,150,12,0);
+      transition: border-color 0.4s ease;
+      pointer-events: none;
+    }
+    .venue-card:hover .venue-card-border { border-color: rgba(200,150,12,0.35); }
+
+    /* Coming soon card special */
+    .venue-coming-soon .venue-card-img {
+      filter: grayscale(40%) brightness(0.4);
+    }
+    .venue-coming-soon:hover .venue-card-img {
+      filter: grayscale(20%) brightness(0.5);
+    }
+
+    /* ─────────────── EXPERIENCE ─────────────── */
+    .exp-item {
+      border-left: 1px solid rgba(200,150,12,0.2);
+      padding-left: 24px;
+      transition: border-color 0.3s ease;
+    }
+    .exp-item:hover { border-color: #c8960c; }
+    .exp-number {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: rgba(200,150,12,0.5);
+    }
+
+    /* ─────────────── GALLERY ─────────────── */
+    .gallery-item {
+      position: relative; overflow: hidden;
+      cursor: pointer;
+    }
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: block;
+    }
+    .gallery-item:hover img { transform: scale(1.08); }
+    .gallery-overlay {
+      position: absolute; inset: 0;
+      background: rgba(5,5,5,0);
+      transition: background 0.4s ease;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .gallery-item:hover .gallery-overlay { background: rgba(5,5,5,0.35); }
+    .gallery-plus {
+      opacity: 0; transform: scale(0.7);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      color: #f0d98a;
+      font-size: 24px;
+    }
+    .gallery-item:hover .gallery-plus { opacity: 1; transform: scale(1); }
+
+    /* ─────────────── BOOKING ─────────────── */
+    #booking {
+      position: relative;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(200,150,12,0.07) 0%, transparent 60%),
+        url('https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1800&q=80&auto=format&fit=crop') center/cover fixed;
+    }
+    #booking::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(5,5,5,0.88);
+    }
+    .glass-form {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(200,150,12,0.2);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .luxury-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 0;
+      border-bottom: 1px solid rgba(200,150,12,0.3);
+      color: #faf5e8;
+      font-family: 'Jost', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      padding: 14px 0;
+      outline: none;
+      transition: border-color 0.3s ease;
+      -webkit-appearance: none;
+    }
+    .luxury-input::placeholder { color: rgba(250,245,232,0.35); }
+    .luxury-input:focus { border-bottom-color: #c8960c; }
+    .luxury-input option { background: #111; color: #faf5e8; }
+    .luxury-label {
+      font-family: 'Jost', sans-serif;
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(200,150,12,0.7);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .btn-gold {
+      background: linear-gradient(135deg, #b8860b 0%, #d4a017 35%, #f0d98a 50%, #d4a017 65%, #b8860b 100%);
+      background-size: 200% auto;
+      color: #050505;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      border: none; cursor: pointer;
+      transition: background-position 0.5s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    }
+    .btn-gold:hover {
+      background-position: right center;
+      box-shadow: 0 8px 30px rgba(200,150,12,0.4);
+      transform: translateY(-1px);
+    }
+    .btn-outline-gold {
+      border: 1px solid rgba(200,150,12,0.5);
+      color: #c8960c;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn-outline-gold:hover {
+      background: rgba(200,150,12,0.08);
+      border-color: #c8960c;
+      box-shadow: 0 0 20px rgba(200,150,12,0.15);
+    }
+
+    /* ─────────────── FOOTER ─────────────── */
+    footer {
+      border-top: 1px solid rgba(200,150,12,0.12);
+    }
+    .footer-link {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(250,245,232,0.4);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+    }
+    .footer-link:hover { color: #c8960c; }
+    .social-icon {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(200,150,12,0.2);
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.3s ease, background 0.3s ease;
+      cursor: pointer;
+    }
+    .social-icon:hover {
+      border-color: #c8960c;
+      background: rgba(200,150,12,0.1);
+    }
+    .social-icon svg { width: 14px; height: 14px; fill: rgba(200,150,12,0.7); }
+
+    /* ─────────────── REVEAL ANIMATIONS ─────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+    .reveal-left {
+      opacity: 0; transform: translateX(-30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal-left.revealed { opacity: 1; transform: translateX(0); }
+    .reveal-right {
+      opacity: 0; transform: translateX(30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal-right.revealed { opacity: 1; transform: translateX(0); }
+
+    /* ─────────────── MOBILE NAV ─────────────── */
+    #mobile-menu {
+      display: none;
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(5,5,5,0.97);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 40px;
+    }
+    #mobile-menu.open { display: flex; }
+    .mobile-nav-link {
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      letter-spacing: 4px;
+      color: rgba(250,245,232,0.7);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+    }
+    .mobile-nav-link:hover { color: #c8960c; }
+
+    /* ─────────────── PARTICLES ─────────────── */
+    #particles-canvas {
+      position: absolute; inset: 0;
+      pointer-events: none; z-index: 1;
+    }
+
+    /* ─────────────── STATUS BADGE ─────────────── */
+    .badge-active {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Jost', sans-serif;
+      font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase;
+      color: rgba(200,150,12,0.8);
+      border: 1px solid rgba(200,150,12,0.3);
+      padding: 4px 10px;
+    }
+    .badge-active .dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: #c8960c;
+      box-shadow: 0 0 5px rgba(200,150,12,0.8);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    @media (max-width: 768px) {
+      #main-nav { padding: 20px 24px; }
+      #main-nav.scrolled { padding: 14px 24px; }
+      .desktop-nav { display: none; }
+    }
+    @media (min-width: 769px) {
+      .mobile-menu-btn { display: none; }
+    }
+
+    /* ─────────────── VENUE MODAL ─────────────── */
+    #venue-modal {
+      position: fixed; inset: 0; z-index: 8000;
+      background: rgba(3,3,3,0.97);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      display: flex; flex-direction: column;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+      overflow-y: auto;
+    }
+    #venue-modal.open { opacity: 1; visibility: visible; }
+    .venue-modal-close {
+      position: fixed; top: 28px; right: 36px;
+      width: 44px; height: 44px;
+      border: 1px solid rgba(200,150,12,0.35);
+      background: rgba(5,5,5,0.8);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 8010;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .venue-modal-close:hover { border-color: #c8960c; background: rgba(200,150,12,0.1); }
+    .venue-modal-close svg { width: 16px; height: 16px; stroke: #c8960c; }
+
+    /* Main featured image */
+    #modal-hero-img {
+      width: 100%; height: 60vh; min-height: 340px; max-height: 620px;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.4s ease;
+    }
+    /* Thumbnail strip */
+    .modal-thumb-strip {
+      display: flex; gap: 6px; overflow-x: auto;
+      padding: 0 4px;
+      scrollbar-width: none;
+    }
+    .modal-thumb-strip::-webkit-scrollbar { display: none; }
+    .modal-thumb {
+      flex: 0 0 auto;
+      width: 90px; height: 60px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color 0.25s ease, opacity 0.25s ease;
+      opacity: 0.55;
+    }
+    .modal-thumb:hover { opacity: 0.85; }
+    .modal-thumb.active { border-color: #c8960c; opacity: 1; }
+
+    /* Image lightbox (click featured to expand) */
+    #img-lightbox {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(0,0,0,0.96);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      cursor: zoom-out;
+    }
+    #img-lightbox.open { opacity: 1; visibility: visible; }
+    #img-lightbox img {
+      max-width: 92vw; max-height: 90vh;
+      object-fit: contain;
+      box-shadow: 0 0 60px rgba(200,150,12,0.15);
+    }
+    #lightbox-close {
+      position: absolute; top: 24px; right: 28px;
+      background: none; border: none; cursor: pointer;
+      color: rgba(200,150,12,0.7); font-size: 28px; line-height: 1;
+    }
+    /* Prev/Next arrows */
+    .modal-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(5,5,5,0.7); border: 1px solid rgba(200,150,12,0.25);
+      width: 44px; height: 44px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.3s, background 0.3s;
+      z-index: 8005;
+    }
+    .modal-arrow:hover { border-color: #c8960c; background: rgba(200,150,12,0.1); }
+    .modal-arrow svg { width: 18px; height: 18px; stroke: #c8960c; }
+    #modal-prev { left: 16px; }
+    #modal-next { right: 16px; }
+
+    /* Venue card click hint */
+    .venue-card::after {
+      content: 'View Gallery';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      font-family: 'Cinzel', serif;
+      font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+      color: #f0d98a;
+      border: 1px solid rgba(240,217,138,0.5);
+      padding: 10px 20px;
+      background: rgba(5,5,5,0.6);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      pointer-events: none;
+      z-index: 5;
+      white-space: nowrap;
+    }
+    .venue-card:hover::after {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .venue-coming-soon::after { content: 'Register Interest'; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     LOADING SCREEN
+════════════════════════════════════════════════ -->
+<div id="loading-screen">
+  <!-- Background particle lines canvas -->
+  <canvas id="loading-canvas"></canvas>
+  <!-- Logo assembly area -->
+  <div id="loading-logo-wrapper">
+    <!-- SVG lines assembling into logo shape -->
+    <canvas id="logo-assembly-canvas" width="200" height="200"></canvas>
+    <!-- Final PNG logo that fades in once assembly is complete -->
+    <img id="loading-logo-img" src="chg-logo.png" alt="CHG Logo" />
+    <div id="loading-brand-text">The Chaudhary Heritage Group</div>
+  </div>
+  <div id="loading-progress">
+    <div id="loading-progress-bar"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════════ -->
+<nav id="main-nav">
+  <div class="flex items-center justify-between max-w-screen-xl mx-auto">
+    <!-- Logo -->
+    <a href="#hero" class="flex items-center gap-3">
+      <img src="chg-logo.png" alt="CHG" class="w-10 h-10 object-contain" style="filter: drop-shadow(0 0 8px rgba(200,150,12,0.5));" />
+      <div>
+        <div class="gold-text" style="font-family:'Cinzel',serif; font-size:14px; letter-spacing:3px; font-weight:600;">CHG</div>
+        <div style="font-family:'Jost',sans-serif; font-size:8px; letter-spacing:3px; color:rgba(250,245,232,0.45); text-transform:uppercase; margin-top:1px;">Heritage Group</div>
+      </div>
+    </a>
+
+    <!-- Desktop Nav -->
+    <div class="desktop-nav flex items-center gap-10">
+      <a href="#about"      class="nav-link">Legacy</a>
+      <a href="#venues"     class="nav-link">Venues</a>
+      <a href="#experience" class="nav-link">Experience</a>
+      <a href="#gallery"    class="nav-link">Gallery</a>
+      <a href="#booking" class="btn-gold px-6 py-3 text-xs tracking-widest">Book Now</a>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="menuBtn" style="background:none;border:none;cursor:pointer;padding:4px;">
+      <svg width="24" height="18" viewBox="0 0 24 18" fill="none">
+        <line x1="0" y1="1"  x2="24" y2="1"  stroke="#c8960c" stroke-width="1.5"/>
+        <line x1="4" y1="9"  x2="24" y2="9"  stroke="#c8960c" stroke-width="1.5"/>
+        <line x1="8" y1="17" x2="24" y2="17" stroke="#c8960c" stroke-width="1.5"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu">
+  <button id="closeMenu" style="position:absolute;top:28px;right:28px;background:none;border:none;cursor:pointer;color:#c8960c;font-size:24px;">✕</button>
+  <img src="chg-logo.png" alt="CHG" style="width:64px;opacity:0.8;filter:drop-shadow(0 0 10px rgba(200,150,12,0.5));" />
+  <a href="#about"      class="mobile-nav-link" onclick="closeMobileMenu()">Legacy</a>
+  <a href="#venues"     class="mobile-nav-link" onclick="closeMobileMenu()">Venues</a>
+  <a href="#experience" class="mobile-nav-link" onclick="closeMobileMenu()">Experience</a>
+  <a href="#gallery"    class="mobile-nav-link" onclick="closeMobileMenu()">Gallery</a>
+  <a href="#booking"    class="mobile-nav-link" onclick="closeMobileMenu()">Book Now</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <canvas id="particles-canvas"></canvas>
+
+  <div class="hero-content px-6">
+    <!-- Logo Mark -->
+    <div class="flex justify-center mb-8 animate-float" style="animation-delay:0.3s;">
+      <img src="chg-logo.png" alt="CHG" style="width:140px;height:140px;object-fit:contain;filter: drop-shadow(0 0 28px rgba(200,150,12,0.85)) drop-shadow(0 0 60px rgba(200,150,12,0.35)) drop-shadow(0 0 100px rgba(200,150,12,0.15));" />
+    </div>
+
+    <!-- Ornament -->
+    <div class="ornament justify-center mb-5">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line right"></div>
+    </div>
+
+    <p class="section-label text-center mb-5" style="letter-spacing:8px;">Est. — A Legacy of Celebrations</p>
+
+    <h1 class="gold-text-animated text-center mb-4"
+        style="font-family:'Cinzel',serif; font-size:clamp(30px,5vw,68px); font-weight:600; letter-spacing:3px; line-height:1.15;">
+      The Chaudhary<br/>Heritage Group
+    </h1>
+
+    <div class="hero-subtitle-line mb-10">
+      <span></span>
+      <p style="font-family:'Cormorant Garamond',serif; font-size:clamp(15px,2vw,22px); font-weight:300; font-style:italic; color:rgba(250,245,232,0.82); letter-spacing:1px; white-space:nowrap;">
+        Luxury Wedding Venues &amp; Timeless Celebrations
+      </p>
+      <span></span>
+    </div>
+
+    <div class="hero-divider mb-10"></div>
+
+    <!-- CTAs -->
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <a href="#venues" class="btn-gold px-10 py-4 text-xs tracking-widest inline-block">Explore Venues</a>
+      <a href="#booking" class="btn-outline-gold px-10 py-4 text-xs tracking-widest inline-block" style="color:#c8960c;">Book Your Event</a>
+    </div>
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div style="position:absolute; bottom:36px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; z-index:2;">
+    <span style="font-family:'Jost',sans-serif; font-size:9px; letter-spacing:4px; text-transform:uppercase; color:rgba(200,150,12,0.5);">Scroll</span>
+    <div style="width:1px; height:40px; background:linear-gradient(180deg,rgba(200,150,12,0.6),transparent); animation:scrollDrop 2s ease-in-out infinite;"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     ABOUT
+════════════════════════════════════════════════ -->
+<section id="about" class="py-32 px-6 relative" style="background: linear-gradient(180deg, #0a0a0a 0%, #0d0d0d 100%);">
+  <!-- Ambient glow -->
+  <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:600px; height:300px; background:radial-gradient(ellipse, rgba(200,150,12,0.04) 0%, transparent 70%); pointer-events:none;"></div>
+
+  <div class="max-w-screen-xl mx-auto">
+    <!-- Label -->
+    <div class="text-center mb-16 reveal">
+      <div class="ornament justify-center mb-6">
+        <div class="ornament-line" style="max-width:40px;"></div>
+        <div class="ornament-diamond"></div>
+        <div class="ornament-line right" style="max-width:40px;"></div>
+      </div>
+      <p class="section-label mb-4" style="letter-spacing:7px;">Our Story</p>
+      <h2 style="font-family:'Cinzel',serif; font-size:clamp(26px,4vw,48px); font-weight:500; letter-spacing:2px; color:#faf5e8;">
+        A <span class="gold-text">Heritage</span> of Elegance
+      </h2>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <!-- Text -->
+      <div class="reveal-left">
+        <p style="font-family:'Cormorant Garamond',serif; font-size:clamp(20px,2.2vw,26px); font-weight:300; line-height:1.7; color:rgba(250,245,232,0.85); margin-bottom:28px;">
+          "We do not merely host events. We craft memories that endure through generations — woven with grace, adorned with elegance, and delivered with an unwavering commitment to perfection."
+        </p>
+        <p style="font-size:14px; font-weight:300; line-height:1.9; color:rgba(250,245,232,0.5); margin-bottom:40px;">
+          The Chaudhary Heritage Group was born from a singular vision — to redefine the landscape of luxury events in India. Rooted in heritage and driven by a passion for refined hospitality, CHG stands as a testament to what is possible when tradition meets contemporary luxury.
+        </p>
+        <p style="font-size:14px; font-weight:300; line-height:1.9; color:rgba(250,245,232,0.5); margin-bottom:40px;">
+          From intimate ceremonies to grand celebrations, each CHG venue is a curated world unto itself — where bespoke architecture, immaculate landscaping, and world-class service converge to create moments beyond imagination.
+        </p>
+        <!-- Signature line -->
+        <div class="ornament">
+          <div class="ornament-line"></div>
+          <div class="ornament-diamond"></div>
+        </div>
+      </div>
+
+      <!-- Stats / Image -->
+      <div class="reveal-right">
+        <!-- Image Frame -->
+        <div style="position:relative; padding:2px; background:linear-gradient(135deg,rgba(200,150,12,0.4),rgba(200,150,12,0.1),rgba(200,150,12,0.4));">
+          <div style="position:absolute;top:-12px;left:-12px;width:30px;height:30px;border-top:1px solid #c8960c;border-left:1px solid #c8960c;"></div>
+          <div style="position:absolute;top:-12px;right:-12px;width:30px;height:30px;border-top:1px solid #c8960c;border-right:1px solid #c8960c;"></div>
+          <div style="position:absolute;bottom:-12px;left:-12px;width:30px;height:30px;border-bottom:1px solid #c8960c;border-left:1px solid #c8960c;"></div>
+          <div style="position:absolute;bottom:-12px;right:-12px;width:30px;height:30px;border-bottom:1px solid #c8960c;border-right:1px solid #c8960c;"></div>
+          <img src="https://images.unsplash.com/photo-1529543544282-ea669407fca3?w=900&q=85&auto=format&fit=crop"
+               alt="Luxury Venue"
+               style="width:100%; height:420px; object-fit:cover; display:block; filter:brightness(0.85) sepia(0.1);" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-0 mt-24 reveal" style="border:1px solid rgba(200,150,12,0.12);">
+      <div class="p-10 text-center" style="border-right:1px solid rgba(200,150,12,0.12);">
+        <div class="gold-text" style="font-family:'Cinzel',serif; font-size:38px; font-weight:600;">3</div>
+        <div class="about-stat-line mx-auto my-3"></div>
+        <div style="font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(250,245,232,0.4);">Premium Venues</div>
+      </div>
+      <div class="p-10 text-center" style="border-right:1px solid rgba(200,150,12,0.12);">
+        <div class="gold-text" style="font-family:'Cinzel',serif; font-size:38px; font-weight:600;">5K<span style="font-size:22px;">+</span></div>
+        <div class="about-stat-line mx-auto my-3"></div>
+        <div style="font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(250,245,232,0.4);">Guest Capacity</div>
+      </div>
+      <div class="p-10 text-center" style="border-right:1px solid rgba(200,150,12,0.12);">
+        <div class="gold-text" style="font-family:'Cinzel',serif; font-size:38px; font-weight:600;">500<span style="font-size:22px;">+</span></div>
+        <div class="about-stat-line mx-auto my-3"></div>
+        <div style="font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(250,245,232,0.4);">Events Hosted</div>
+      </div>
+      <div class="p-10 text-center">
+        <div class="gold-text" style="font-family:'Cinzel',serif; font-size:38px; font-weight:600;">100<span style="font-size:22px;">%</span></div>
+        <div class="about-stat-line mx-auto my-3"></div>
+        <div style="font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(250,245,232,0.4);">Curated Excellence</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     VENUES
+════════════════════════════════════════════════ -->
+<section id="venues" class="py-32 px-6 relative" style="background:#080808;">
+  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,150,12,0.3),transparent);"></div>
+
+  <div class="max-w-screen-xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-20 reveal">
+      <p class="section-label mb-4" style="letter-spacing:7px;">Our Portfolio</p>
+      <h2 style="font-family:'Cinzel',serif; font-size:clamp(26px,4vw,48px); font-weight:500; letter-spacing:2px; color:#faf5e8; margin-bottom:16px;">
+        The <span class="gold-text">CHG</span> Venues
+      </h2>
+      <p style="font-size:14px; font-weight:300; color:rgba(250,245,232,0.45); max-width:480px; margin:0 auto; line-height:1.8;">
+        Three distinct worlds. One unwavering standard of luxury.
+      </p>
+    </div>
+
+    <!-- Venue Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- Card A: Chaudhary Garden -->
+      <div class="venue-card reveal" style="transition-delay:0s;" onclick="openVenueModal('garden')" role="button" tabindex="0">
+        <div style="overflow:hidden;">
+          <img class="venue-card-img"
+               src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=900&q=85&auto=format&fit=crop"
+               alt="Chaudhary Garden" />
+        </div>
+        <div class="venue-card-overlay"></div>
+        <div class="venue-card-border"></div>
+        <div class="venue-card-content">
+          <div class="badge-active mb-4">
+            <span class="dot"></span>Operational
+          </div>
+          <p class="section-label mb-2" style="letter-spacing:4px;">Outdoor Wedding Venue</p>
+          <h3 style="font-family:'Cinzel',serif; font-size:22px; font-weight:500; letter-spacing:1px; color:#faf5e8; margin-bottom:8px;">
+            Chaudhary Garden
+          </h3>
+          <div class="venue-card-detail">
+            <div style="height:1px;background:linear-gradient(90deg,rgba(200,150,12,0.4),transparent);margin:14px 0;"></div>
+            <p style="font-size:13px; font-weight:300; color:rgba(250,245,232,0.6); line-height:1.7;">
+              An expansive open-air sanctuary adorned with manicured landscapes, grand floral arches, and an atmosphere of pure enchantment. The perfect canvas for your dream celebration.
+            </p>
+            <div class="flex items-center gap-3 mt-4">
+              <span style="font-size:10px;letter-spacing:3px;color:#c8960c;text-transform:uppercase;">Enquire Now</span>
+              <svg width="20" height="1" viewBox="0 0 20 1"><line x1="0" y1="0.5" x2="20" y2="0.5" stroke="#c8960c" stroke-width="1"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card B: Chaudhary Guest House -->
+      <div class="venue-card reveal" style="transition-delay:0.15s;" onclick="openVenueModal('guesthouse')" role="button" tabindex="0">
+        <div style="overflow:hidden;">
+          <img class="venue-card-img"
+               src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=900&q=85&auto=format&fit=crop"
+               alt="Chaudhary Guest House" />
+        </div>
+        <div class="venue-card-overlay"></div>
+        <div class="venue-card-border"></div>
+        <div class="venue-card-content">
+          <div class="badge-active mb-4">
+            <span class="dot"></span>Operational
+          </div>
+          <p class="section-label mb-2" style="letter-spacing:4px;">Indoor Banquet &amp; Stay</p>
+          <h3 style="font-family:'Cinzel',serif; font-size:22px; font-weight:500; letter-spacing:1px; color:#faf5e8; margin-bottom:8px;">
+            Chaudhary Guest House
+          </h3>
+          <div class="venue-card-detail">
+            <div style="height:1px;background:linear-gradient(90deg,rgba(200,150,12,0.4),transparent);margin:14px 0;"></div>
+            <p style="font-size:13px; font-weight:300; color:rgba(250,245,232,0.6); line-height:1.7;">
+              A distinguished indoor haven where heritage architecture meets contemporary elegance. Intimate banquets, grand receptions, and curated accommodation — all under one roof.
+            </p>
+            <div class="flex items-center gap-3 mt-4">
+              <span style="font-size:10px;letter-spacing:3px;color:#c8960c;text-transform:uppercase;">Enquire Now</span>
+              <svg width="20" height="1" viewBox="0 0 20 1"><line x1="0" y1="0.5" x2="20" y2="0.5" stroke="#c8960c" stroke-width="1"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card C: Coming Soon -->
+      <div class="venue-card venue-coming-soon reveal" style="transition-delay:0.3s;" onclick="openVenueModal('signature')" role="button" tabindex="0">
+        <div style="overflow:hidden;">
+          <img class="venue-card-img"
+               src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=900&q=85&auto=format&fit=crop"
+               alt="CHG Signature Venue" />
+        </div>
+        <div class="venue-card-overlay" style="background:linear-gradient(180deg,rgba(5,5,5,0.3) 0%,rgba(5,5,5,0.97) 100%);"></div>
+        <div class="venue-card-border"></div>
+        <!-- Coming Soon Overlay Center -->
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2;">
+          <div style="text-align:center;padding:24px;">
+            <div style="width:50px;height:1px;background:linear-gradient(90deg,transparent,#c8960c);margin:0 auto 16px;"></div>
+            <div class="gold-text-animated" style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:6px;text-transform:uppercase;margin-bottom:6px;">Coming Soon</div>
+            <div style="width:50px;height:1px;background:linear-gradient(90deg,#c8960c,transparent);margin:0 auto 12px;"></div>
+            <p style="font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:rgba(250,245,232,0.5);line-height:1.5;">Launching Soon</p>
+          </div>
+        </div>
+        <div class="venue-card-content" style="z-index:3;">
+          <div style="display:inline-flex;align-items:center;gap:6px;font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(200,150,12,0.6);border:1px solid rgba(200,150,12,0.2);padding:4px 10px;margin-bottom:12px;">
+            <span style="width:5px;height:5px;border-radius:50%;background:rgba(200,150,12,0.5);"></span>
+            Future Flagship
+          </div>
+          <p class="section-label mb-2" style="letter-spacing:4px;">Signature Collection</p>
+          <h3 style="font-family:'Cinzel',serif; font-size:22px; font-weight:500; letter-spacing:1px; color:#faf5e8; margin-bottom:8px;">
+            CHG Signature Venue
+          </h3>
+          <div class="venue-card-detail">
+            <div style="height:1px;background:linear-gradient(90deg,rgba(200,150,12,0.4),transparent);margin:14px 0;"></div>
+            <p style="font-size:13px; font-weight:300; color:rgba(250,245,232,0.5); line-height:1.7; font-style:italic;">
+              "Launching Soon — A New Benchmark in Luxury Events." Our most ambitious project. A venue that will forever change what you believe is possible.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,150,12,0.3),transparent);"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     EXPERIENCE
+════════════════════════════════════════════════ -->
+<section id="experience" class="py-32 px-6 relative overflow-hidden" style="background:#0a0a0a;">
+  <!-- BG Image -->
+  <div style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1510076857177-7470076d4098?w=1800&q=75&auto=format&fit=crop') center/cover no-repeat;opacity:0.06;"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,5,5,0.98) 0%,rgba(5,5,5,0.9) 100%);"></div>
+
+  <div class="max-w-screen-xl mx-auto relative z-10">
+    <!-- Header -->
+    <div class="text-center mb-20 reveal">
+      <p class="section-label mb-4" style="letter-spacing:7px;">The CHG Difference</p>
+      <h2 style="font-family:'Cinzel',serif; font-size:clamp(26px,4vw,48px); font-weight:500; letter-spacing:2px; color:#faf5e8;">
+        An <span class="gold-text">Unparalleled</span> Experience
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <!-- Experience Items -->
+      <div class="space-y-10">
+        <div class="exp-item reveal" style="transition-delay:0s;">
+          <div class="exp-number mb-2">01</div>
+          <h3 style="font-family:'Cinzel',serif;font-size:20px;font-weight:500;letter-spacing:1px;color:#faf5e8;margin-bottom:10px;">Grand Entrances</h3>
+          <p style="font-size:13px;font-weight:300;line-height:1.8;color:rgba(250,245,232,0.5);">Monumental gateways and illuminated pathways that transform every arrival into a cinematic moment, setting the tone for an evening of extraordinary elegance.</p>
+        </div>
+        <div class="exp-item reveal" style="transition-delay:0.1s;">
+          <div class="exp-number mb-2">02</div>
+          <h3 style="font-family:'Cinzel',serif;font-size:20px;font-weight:500;letter-spacing:1px;color:#faf5e8;margin-bottom:10px;">Large Capacity Lawns</h3>
+          <p style="font-size:13px;font-weight:300;line-height:1.8;color:rgba(250,245,232,0.5);">Sweeping, meticulously curated grounds that accommodate thousands with effortless grace — never compromising on the intimate warmth that defines a CHG celebration.</p>
+        </div>
+        <div class="exp-item reveal" style="transition-delay:0.2s;">
+          <div class="exp-number mb-2">03</div>
+          <h3 style="font-family:'Cinzel',serif;font-size:20px;font-weight:500;letter-spacing:1px;color:#faf5e8;margin-bottom:10px;">Elegant Lighting Design</h3>
+          <p style="font-size:13px;font-weight:300;line-height:1.8;color:rgba(250,245,232,0.5);">A symphony of light — from the warm glow of Edison canopies to the architectural precision of focused spotlights — every corner tells a story in luminance.</p>
+        </div>
+        <div class="exp-item reveal" style="transition-delay:0.3s;">
+          <div class="exp-number mb-2">04</div>
+          <h3 style="font-family:'Cinzel',serif;font-size:20px;font-weight:500;letter-spacing:1px;color:#faf5e8;margin-bottom:10px;">Seamless Guest Flow</h3>
+          <p style="font-size:13px;font-weight:300;line-height:1.8;color:rgba(250,245,232,0.5);">Thoughtfully designed spatial flows, dedicated arrival lounges, and a discreet team of hospitality professionals ensure every guest experiences pure ease from arrival to farewell.</p>
+        </div>
+      </div>
+
+      <!-- Visual -->
+      <div class="reveal-right">
+        <div style="position:relative;">
+          <!-- Main Image -->
+          <div style="position:relative;padding:2px;background:linear-gradient(135deg,rgba(200,150,12,0.35),rgba(200,150,12,0.08));">
+            <div style="position:absolute;top:-14px;left:-14px;width:35px;height:35px;border-top:1px solid rgba(200,150,12,0.7);border-left:1px solid rgba(200,150,12,0.7);"></div>
+            <div style="position:absolute;bottom:-14px;right:-14px;width:35px;height:35px;border-bottom:1px solid rgba(200,150,12,0.7);border-right:1px solid rgba(200,150,12,0.7);"></div>
+            <img src="https://images.unsplash.com/photo-1543007631-283050bb3e8c?w=900&q=85&auto=format&fit=crop"
+                 alt="CHG Experience"
+                 style="width:100%;height:500px;object-fit:cover;display:block;filter:brightness(0.8) sepia(0.1);" />
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(5,5,5,0.6) 100%);"></div>
+          </div>
+          <!-- Floating badge -->
+          <div style="position:absolute;bottom:-20px;right:-20px;background:rgba(5,5,5,0.95);border:1px solid rgba(200,150,12,0.25);padding:20px 28px;backdrop-filter:blur(10px);">
+            <div class="gold-text" style="font-family:'Cinzel',serif;font-size:28px;font-weight:600;">5,000<span style="font-size:14px;">+</span></div>
+            <div style="height:1px;background:linear-gradient(90deg,rgba(200,150,12,0.4),transparent);margin:8px 0;"></div>
+            <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(250,245,232,0.4);">Guest Capacity</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     GALLERY
+════════════════════════════════════════════════ -->
+<section id="gallery" class="py-32 px-6 relative" style="background:#080808;">
+  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,150,12,0.3),transparent);"></div>
+
+  <div class="max-w-screen-xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-16 reveal">
+      <p class="section-label mb-4" style="letter-spacing:7px;">Visual Stories</p>
+      <h2 style="font-family:'Cinzel',serif; font-size:clamp(26px,4vw,48px); font-weight:500; letter-spacing:2px; color:#faf5e8;">
+        Moments in <span class="gold-text">Frame</span>
+      </h2>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2" id="gallery-grid">
+      <!-- Row 1 -->
+      <div class="gallery-item reveal col-span-2 row-span-2" style="height:420px;transition-delay:0s;">
+        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=85&auto=format&fit=crop" alt="Luxury Wedding" />
+        <div class="gallery-overlay"><span class="gallery-plus">✦</span></div>
+      </div>
+      <div class="gallery-item reveal" style="height:205px;transition-delay:0.05s;">
+        <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&q=85&auto=format&fit=crop" alt="Event Decor" />
+        <div class="gallery-overlay"><span class="gallery-plus">✦</span></div>
+      </div>
+      <div class="gallery-item reveal" style="height:205px;transition-delay:0.1s;">
+        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&q=85&auto=format&fit=crop" alt="Celebration" />
+        <div class="gallery-overlay"><span class="gallery-plus">✦</span></div>
+      </div>
+      <div class="gallery-item reveal" style="height:205px;transition-delay:0.15s;">
+        <img src="https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&q=85&auto=format&fit=crop" alt="Wedding Details" />
+        <div class="gallery-overlay"><span class="gallery-plus">✦</span></div>
+      </div>
+      <div class="gallery-item reveal" style="height:205px;transition-delay:0.2s;">
+        <img src="https://images.unsplash.com/photo-1504196606672-aef5c9cefc92?w=600&q=85&auto=format&fit=crop" alt="Venue Night" />
+        <div class="gallery-overlay"><span class="gallery-plus">✦</span></div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="gallery-item reveal" style="height:260px;transition-delay:0.25s;">
+        <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&q=85&auto=format&fit=crop" alt="Wedding Flowers" />
+        <div class="gallery-overlay"><span class="gallery-plus">✦</span></div>
+      </div>
+      <div class="gallery-item reveal col-span-2" style="height:260px;transition-delay:0.3s;">
+        <img src="https://images.unsplash.com/photo-1524863479829-916d8e77f114?w=900&q=85&auto=format&fit=crop" alt="Grand Hall" />
+        <div class="gallery-overlay"><span class="gallery-plus">✦</span></div>
+      </div>
+      <div class="gallery-item reveal" style="height:260px;transition-delay:0.35s;">
+        <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600&q=85&auto=format&fit=crop" alt="Festive" />
+        <div class="gallery-overlay"><span class="gallery-plus">✦</span></div>
+      </div>
+    </div>
+  </div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,150,12,0.3),transparent);"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     TESTIMONIAL STRIP
+════════════════════════════════════════════════ -->
+<section class="py-24 px-6" style="background:#050505;">
+  <div class="max-w-3xl mx-auto text-center reveal">
+    <div style="font-size:48px;color:rgba(200,150,12,0.3);font-family:'Cormorant Garamond',serif;line-height:1;margin-bottom:20px;">"</div>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.5vw,26px);font-weight:300;font-style:italic;line-height:1.7;color:rgba(250,245,232,0.8);margin-bottom:24px;">
+      The Chaudhary Heritage Group did not just host our wedding — they transformed it into the most breathtaking evening our families have ever witnessed. Every detail was impeccable, every moment, magical.
+    </p>
+    <div class="ornament justify-center mb-4">
+      <div class="ornament-line" style="max-width:50px;"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line right" style="max-width:50px;"></div>
+    </div>
+    <p style="font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(200,150,12,0.6);">— Priya & Arjun Sharma, Chaudhary Garden</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     BOOKING
+════════════════════════════════════════════════ -->
+<section id="booking" class="py-32 px-6 relative">
+  <div id="booking" style="background:url('https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1800&q=75&auto=format&fit=crop') center/cover fixed;position:absolute;inset:0;"></div>
+  <div style="position:absolute;inset:0;background:rgba(5,5,5,0.9);"></div>
+  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,150,12,0.3),transparent);"></div>
+
+  <div class="max-w-screen-lg mx-auto relative z-10">
+    <!-- Header -->
+    <div class="text-center mb-14 reveal">
+      <p class="section-label mb-4" style="letter-spacing:7px;">Reserve Your Date</p>
+      <h2 style="font-family:'Cinzel',serif; font-size:clamp(26px,4vw,48px); font-weight:500; letter-spacing:2px; color:#faf5e8; margin-bottom:16px;">
+        Begin Your <span class="gold-text">Legacy</span>
+      </h2>
+      <p style="font-size:13px;font-weight:300;color:rgba(250,245,232,0.4);max-width:420px;margin:0 auto;line-height:1.8;">
+        Share your vision with us. Our dedicated event consultants will craft a bespoke experience tailored to your every desire.
+      </p>
+    </div>
+
+    <!-- Glass Form -->
+    <div class="glass-form p-10 md:p-14 reveal">
+      <!-- Corner Accents -->
+      <div style="position:absolute;top:0;left:0;width:40px;height:40px;border-top:1px solid rgba(200,150,12,0.4);border-left:1px solid rgba(200,150,12,0.4);"></div>
+      <div style="position:absolute;top:0;right:0;width:40px;height:40px;border-top:1px solid rgba(200,150,12,0.4);border-right:1px solid rgba(200,150,12,0.4);"></div>
+      <div style="position:absolute;bottom:0;left:0;width:40px;height:40px;border-bottom:1px solid rgba(200,150,12,0.4);border-left:1px solid rgba(200,150,12,0.4);"></div>
+      <div style="position:absolute;bottom:0;right:0;width:40px;height:40px;border-bottom:1px solid rgba(200,150,12,0.4);border-right:1px solid rgba(200,150,12,0.4);"></div>
+
+      <form id="bookingForm" onsubmit="handleFormSubmit(event)" style="position:relative;">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+          <!-- Name -->
+          <div>
+            <label class="luxury-label">Full Name</label>
+            <input type="text" class="luxury-input" placeholder="Your distinguished name" required />
+          </div>
+          <!-- Phone -->
+          <div>
+            <label class="luxury-label">Contact Number</label>
+            <input type="tel" class="luxury-input" placeholder="+91 — — — — — — — — —" required />
+          </div>
+          <!-- Event Type -->
+          <div>
+            <label class="luxury-label">Nature of Celebration</label>
+            <select class="luxury-input" required>
+              <option value="" disabled selected>Select your occasion</option>
+              <option value="wedding">Royal Wedding</option>
+              <option value="reception">Grand Reception</option>
+              <option value="engagement">Engagement Ceremony</option>
+              <option value="birthday">Milestone Birthday</option>
+              <option value="corporate">Corporate Gala</option>
+              <option value="other">Private Celebration</option>
+            </select>
+          </div>
+          <!-- Guests -->
+          <div>
+            <label class="luxury-label">Estimated Guest Count</label>
+            <select class="luxury-input" required>
+              <option value="" disabled selected>Number of guests</option>
+              <option>Up to 100 guests</option>
+              <option>100 – 300 guests</option>
+              <option>300 – 500 guests</option>
+              <option>500 – 1,000 guests</option>
+              <option>1,000 – 2,500 guests</option>
+              <option>2,500 – 5,000 guests</option>
+              <option>5,000+ guests</option>
+            </select>
+          </div>
+          <!-- Venue -->
+          <div>
+            <label class="luxury-label">Preferred Venue</label>
+            <select class="luxury-input">
+              <option value="" disabled selected>Choose your venue</option>
+              <option>Chaudhary Garden</option>
+              <option>Chaudhary Guest House / Hall</option>
+              <option>CHG Signature Venue (Register Interest)</option>
+            </select>
+          </div>
+          <!-- Date -->
+          <div>
+            <label class="luxury-label">Preferred Date</label>
+            <input type="date" class="luxury-input" required style="color-scheme:dark;" />
+          </div>
+        </div>
+
+        <!-- Message -->
+        <div class="mt-8">
+          <label class="luxury-label">Your Vision (Optional)</label>
+          <textarea class="luxury-input" rows="3" placeholder="Share your vision, dreams, and any special requirements…" style="resize:none;height:auto;"></textarea>
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center mt-12">
+          <button type="submit" class="btn-gold px-16 py-5 text-xs tracking-widest">
+            Reserve Your Date
+          </button>
+          <p style="font-size:10px;letter-spacing:2px;color:rgba(250,245,232,0.25);margin-top:16px;text-transform:uppercase;">
+            Our consultants will respond within 24 hours
+          </p>
+        </div>
+      </form>
+
+      <!-- Success Message (hidden) -->
+      <div id="formSuccess" style="display:none;text-align:center;padding:40px 0;">
+        <img src="chg-logo.png" alt="CHG" style="width:60px;margin:0 auto 20px;filter:drop-shadow(0 0 12px rgba(200,150,12,0.6));" />
+        <div class="gold-text" style="font-family:'Cinzel',serif;font-size:22px;letter-spacing:2px;margin-bottom:12px;">Request Received</div>
+        <p style="font-size:13px;font-weight:300;color:rgba(250,245,232,0.5);line-height:1.8;">Your celebration enquiry has been received with the utmost care.<br/>A CHG consultant will be in touch shortly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════ -->
+<footer class="py-16 px-6" style="background:#050505;">
+  <div class="max-w-screen-xl mx-auto">
+    <!-- Top Row -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-14">
+      <!-- Logo Col -->
+      <div class="flex flex-col items-start gap-5">
+        <div class="flex items-center gap-4">
+          <img src="chg-logo.png" alt="CHG Logo" style="width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(200,150,12,0.5));" />
+          <div>
+            <div class="gold-text" style="font-family:'Cinzel',serif;font-size:16px;letter-spacing:3px;font-weight:600;">CHG</div>
+            <div style="font-size:8px;letter-spacing:3px;color:rgba(250,245,232,0.35);text-transform:uppercase;">The Chaudhary Heritage Group</div>
+          </div>
+        </div>
+        <p style="font-size:12px;font-weight:300;line-height:1.8;color:rgba(250,245,232,0.35);max-width:260px;">
+          Luxury wedding venues crafted for those who celebrate life with intention and elegance.
+        </p>
+        <!-- Social -->
+        <div class="flex gap-3 mt-2">
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </div>
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.27 8.27 0 004.84 1.55V6.79a4.85 4.85 0 01-1.07-.1z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Venues Col -->
+      <div>
+        <h4 style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;color:#c8960c;text-transform:uppercase;margin-bottom:20px;">Our Venues</h4>
+        <div class="space-y-3">
+          <div style="font-size:13px;font-weight:300;color:rgba(250,245,232,0.5);">Chaudhary Garden</div>
+          <div style="font-size:13px;font-weight:300;color:rgba(250,245,232,0.5);">Chaudhary Guest House / Hall</div>
+          <div style="font-size:13px;font-weight:300;color:rgba(200,150,12,0.5);font-style:italic;">CHG Signature Venue <span style="font-size:10px;letter-spacing:2px;">(Coming Soon)</span></div>
+        </div>
+      </div>
+
+      <!-- Contact Col -->
+      <div>
+        <h4 style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;color:#c8960c;text-transform:uppercase;margin-bottom:20px;">Contact</h4>
+        <div class="space-y-4">
+          <div class="flex items-start gap-3">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(200,150,12,0.5)" stroke-width="1.5" style="flex-shrink:0;margin-top:2px;">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span style="font-size:12px;font-weight:300;color:rgba(250,245,232,0.45);line-height:1.7;">Chaudhary Heritage Estates,<br/>City, State — India</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(200,150,12,0.5)" stroke-width="1.5">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.14 1.18 2 2 0 012.11 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.45-.45a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+            </svg>
+            <span style="font-size:12px;font-weight:300;color:rgba(250,245,232,0.45);">+91 98765 43210</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(200,150,12,0.5)" stroke-width="1.5">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <span style="font-size:12px;font-weight:300;color:rgba(250,245,232,0.45);">events@chaudharyheritage.com</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(200,150,12,0.2),transparent);margin-bottom:24px;"></div>
+
+    <!-- Bottom Row -->
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <p style="font-size:10px;letter-spacing:2px;color:rgba(250,245,232,0.2);text-transform:uppercase;">
+        © 2026 The Chaudhary Heritage Group. All Rights Reserved.
+      </p>
+      <div class="flex gap-8">
+        <a href="#" class="footer-link">Privacy Policy</a>
+        <a href="#" class="footer-link">Terms of Service</a>
+        <a href="#" class="footer-link">Careers</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════
+     VENUE MODAL
+════════════════════════════════════════════════ -->
+<div id="venue-modal" role="dialog" aria-modal="true">
+  <!-- Close -->
+  <button class="venue-modal-close" onclick="closeVenueModal()">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+
+  <!-- Header band -->
+  <div style="position:relative;flex-shrink:0;">
+    <!-- Hero Image -->
+    <div style="position:relative;overflow:hidden;">
+      <img id="modal-hero-img" src="" alt="" onclick="openLightbox()" style="cursor:zoom-in;" />
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,3,3,0) 40%,rgba(3,3,3,0.85) 100%);pointer-events:none;"></div>
+      <!-- Prev/Next -->
+      <button class="modal-arrow" id="modal-prev" onclick="modalNav(-1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="modal-arrow" id="modal-next" onclick="modalNav(1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <!-- Image counter -->
+      <div style="position:absolute;bottom:20px;right:24px;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:3px;color:rgba(240,217,138,0.7);">
+        <span id="modal-img-index">1</span> / <span id="modal-img-total">6</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thumbnail strip -->
+  <div style="background:#080808;padding:14px 24px;flex-shrink:0;border-bottom:1px solid rgba(200,150,12,0.1);">
+    <div class="modal-thumb-strip" id="modal-thumbs"></div>
+  </div>
+
+  <!-- Venue info -->
+  <div style="padding:40px 40px 60px;max-width:960px;margin:0 auto;">
+    <!-- Tag + status -->
+    <div class="flex items-center gap-4 mb-5">
+      <div id="modal-status"></div>
+      <span style="color:rgba(200,150,12,0.3);">•</span>
+      <span id="modal-tag" class="section-label" style="letter-spacing:4px;"></span>
+    </div>
+    <!-- Name -->
+    <h2 id="modal-title" style="font-family:'Cinzel',serif;font-size:clamp(24px,4vw,42px);font-weight:500;letter-spacing:2px;color:#faf5e8;margin-bottom:20px;"></h2>
+    <!-- Ornament -->
+    <div class="ornament mb-8">
+      <div class="ornament-line" style="max-width:60px;"></div>
+      <div class="ornament-diamond"></div>
+    </div>
+    <!-- Description -->
+    <p id="modal-desc" style="font-family:'Cormorant Garamond',serif;font-size:clamp(17px,2vw,22px);font-weight:300;font-style:italic;line-height:1.75;color:rgba(250,245,232,0.8);margin-bottom:28px;max-width:720px;"></p>
+    <p id="modal-desc2" style="font-size:13px;font-weight:300;line-height:1.9;color:rgba(250,245,232,0.45);max-width:680px;margin-bottom:40px;"></p>
+    <!-- Features grid -->
+    <div id="modal-features" class="grid grid-cols-2 md:grid-cols-4 gap-0 mb-12" style="border:1px solid rgba(200,150,12,0.1);"></div>
+    <!-- CTA -->
+    <div class="flex flex-col sm:flex-row gap-4">
+      <a href="#booking" class="btn-gold px-10 py-4 text-xs tracking-widest inline-block text-center" onclick="closeVenueModal()" id="modal-cta">Enquire About This Venue</a>
+      <button onclick="closeVenueModal()" class="btn-outline-gold px-8 py-4 text-xs tracking-widest">← Back to Venues</button>
+    </div>
+  </div>
+</div>
+
+<!-- Image Lightbox -->
+<div id="img-lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation();" />
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════ -->
+<script>
+/* ══════════════════════════════════════════════
+   LOADING ANIMATION — SVG Lines Assemble Logo
+══════════════════════════════════════════════ */
+(function () {
+  const bgCanvas   = document.getElementById('loading-canvas');
+  const bgCtx      = bgCanvas.getContext('2d');
+  const logoCanvas = document.getElementById('logo-assembly-canvas');
+  const logoCtx    = logoCanvas.getContext('2d');
+  const logoImg    = document.getElementById('loading-logo-img');
+  const brandTx    = document.getElementById('loading-brand-text');
+  const bar        = document.getElementById('loading-progress-bar');
+
+  const GOLD       = '#c8960c';
+  const GOLD_LIGHT = '#f0d98a';
+  const GOLD_DIM   = 'rgba(200,150,12,0.45)';
+
+  /* ── Resize bg canvas ── */
+  let W, H;
+  function resizeBg() {
+    W = bgCanvas.width  = window.innerWidth;
+    H = bgCanvas.height = window.innerHeight;
+  }
+  resizeBg();
+  window.addEventListener('resize', resizeBg);
+
+  /* ── CHG Logo path segments (200×200 viewport)
+        Traced from the geometric badge shape:
+        outer C-shield + inner lattice + crown points ── */
+  const S = 200; // canvas size
+  const CX = S / 2, CY = S / 2;
+
+  // Each segment: { x1,y1, x2,y2 }  (in 0-200 coords)
+  // These trace the outline + inner lines of the CHG badge
+  const LOGO_SEGMENTS = [
+    // ── Outer shield / C shape ──
+    // Crown top-left spike
+    { x1: 72,  y1: 14,  x2: 80,  y2: 28 },
+    { x1: 80,  y1: 28,  x2: 88,  y2: 14 },
+    { x1: 88,  y1: 14,  x2: 96,  y2: 28 },
+    // Crown top-center spike
+    { x1: 100, y1: 10,  x2: 108, y2: 24 },
+    { x1: 108, y1: 24,  x2: 116, y2: 10 },
+    // Crown top-right bar
+    { x1: 116, y1: 10,  x2: 140, y2: 28 },
+    // Right vertical top
+    { x1: 140, y1: 28,  x2: 156, y2: 44 },
+    // Right horizontal top
+    { x1: 156, y1: 44,  x2: 156, y2: 68 },
+    // Right notch inward
+    { x1: 156, y1: 68,  x2: 136, y2: 68 },
+    { x1: 136, y1: 68,  x2: 136, y2: 88 },
+    { x1: 136, y1: 88,  x2: 156, y2: 88 },
+    // Right vertical lower
+    { x1: 156, y1: 88,  x2: 156, y2: 116 },
+    // Bottom right to bottom
+    { x1: 156, y1: 116, x2: 140, y2: 130 },
+    { x1: 140, y1: 130, x2: 120, y2: 148 },
+    // Bottom point
+    { x1: 120, y1: 148, x2: 100, y2: 168 },
+    { x1: 100, y1: 168, x2: 80,  y2: 148 },
+    // Left side bottom
+    { x1: 80,  y1: 148, x2: 56,  y2: 128 },
+    { x1: 56,  y1: 128, x2: 44,  y2: 112 },
+    // Left vertical
+    { x1: 44,  y1: 112, x2: 44,  y2: 84  },
+    // Left side up
+    { x1: 44,  y1: 84,  x2: 56,  y2: 72  },
+    { x1: 56,  y1: 72,  x2: 56,  y2: 52  },
+    // Top left slant back
+    { x1: 56,  y1: 52,  x2: 72,  y2: 36  },
+    { x1: 72,  y1: 36,  x2: 72,  y2: 14  },
+    // ── Inner lattice horizontal bars ──
+    { x1: 72,  y1: 52,  x2: 136, y2: 52  },
+    { x1: 56,  y1: 78,  x2: 136, y2: 78  },
+    { x1: 56,  y1: 104, x2: 136, y2: 104 },
+    { x1: 72,  y1: 128, x2: 120, y2: 128 },
+    // ── Inner lattice vertical lines ──
+    { x1: 88,  y1: 28,  x2: 88,  y2: 148 },
+    { x1: 112, y1: 28,  x2: 112, y2: 148 },
+    // ── Diagonal braces ──
+    { x1: 72,  y1: 52,  x2: 88,  y2: 36  },
+    { x1: 112, y1: 36,  x2: 136, y2: 52  },
+    { x1: 56,  y1: 104, x2: 72,  y2: 128 },
+    { x1: 112, y1: 128, x2: 136, y2: 104 },
+    // ── Center diamond ──
+    { x1: 100, y1: 72,  x2: 116, y2: 88  },
+    { x1: 116, y1: 88,  x2: 100, y2: 104 },
+    { x1: 100, y1: 104, x2: 84,  y2: 88  },
+    { x1: 84,  y1: 88,  x2: 100, y2: 72  },
+  ];
+
+  const N = LOGO_SEGMENTS.length;
+
+  /* For each segment, pick a random off-screen spawn location */
+  const particles = LOGO_SEGMENTS.map((seg, i) => {
+    const side = i % 4;
+    let ox, oy;
+    switch (side) {
+      case 0: ox = Math.random() * S;  oy = -S * 0.6 - Math.random() * S; break;
+      case 1: ox = S * 1.6 + Math.random() * S; oy = Math.random() * S; break;
+      case 2: ox = Math.random() * S;  oy = S * 1.6 + Math.random() * S; break;
+      default: ox = -S * 0.6 - Math.random() * S; oy = Math.random() * S;
+    }
+    return {
+      seg,
+      ox, oy,           // origin offset
+      delay: 0.1 + (i / N) * 2.2 + Math.random() * 0.4,  // staggered
+      dur: 0.9 + Math.random() * 0.5,
+      alpha: 0.5 + Math.random() * 0.5,
+      thick: 0.8 + Math.random() * 0.8,
+    };
+  });
+
+  /* ── Background ambient lines (flying in from edges) ── */
+  const BG_LINES = [];
+  for (let i = 0; i < 32; i++) {
+    const side = i % 4;
+    let x1, y1;
+    const len = 60 + Math.random() * 200;
+    const angle = Math.random() * Math.PI * 2;
+    switch (side) {
+      case 0: x1 = Math.random(); y1 = -0.05; break;
+      case 1: x1 = 1.05; y1 = Math.random(); break;
+      case 2: x1 = Math.random(); y1 = 1.05; break;
+      default: x1 = -0.05; y1 = Math.random();
+    }
+    BG_LINES.push({
+      x1, y1,
+      x2: x1 + Math.cos(angle) * len / 1200,
+      y2: y1 + Math.sin(angle) * len / 900,
+      delay: Math.random() * 2.0,
+      speed: 0.3 + Math.random() * 0.7,
+      alpha: 0.15 + Math.random() * 0.3,
+      thick: 0.3 + Math.random() * 0.5,
+    });
+  }
+
+  /* ── Timing ── */
+  const TOTAL = 5200;
+  const ASSEMBLE_START  = 400;
+  const ASSEMBLE_END    = 3600;
+  const PNG_FADE_START  = 3400;
+  const SCREEN_FADE_START = 4200;
+
+  let startTime = null;
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function easeOut(t)    { return 1 - Math.pow(1 - t, 3); }
+  function easeInOut(t)  { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+  function drawBgGlow(x, y, r, a) {
+    const g = bgCtx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, `rgba(200,150,12,${a})`);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    bgCtx.fillStyle = g;
+    bgCtx.beginPath();
+    bgCtx.arc(x, y, r, 0, Math.PI * 2);
+    bgCtx.fill();
+  }
+
+  function frame(now) {
+    if (!startTime) startTime = now;
+    const elapsed = now - startTime;
+    const totalProg = Math.min(elapsed / TOTAL, 1);
+    bar.style.width = (totalProg * 100) + '%';
+
+    /* ── Background canvas ── */
+    bgCtx.clearRect(0, 0, W, H);
+
+    // Ambient center glow
+    const gA = 0.04 + 0.03 * Math.sin(elapsed / 700);
+    drawBgGlow(W / 2, H / 2, 300, gA);
+
+    // Flying background lines converging to center
+    BG_LINES.forEach((ln, i) => {
+      const lp = Math.max(0, (elapsed / 1000 - ln.delay) * ln.speed);
+      if (lp <= 0) return;
+      const tp = Math.min(lp, 1);
+      const e = easeInOut(tp);
+      const fx1 = lerp(ln.x1, 0.5, e);
+      const fy1 = lerp(ln.y1, 0.5, e);
+      const fx2 = lerp(ln.x2, 0.5 + (Math.random() - 0.5) * 0.15, e);
+      const fy2 = lerp(ln.y2, 0.5 + (Math.random() - 0.5) * 0.15, e);
+      const fadeOut = elapsed > PNG_FADE_START
+        ? Math.max(0, 1 - (elapsed - PNG_FADE_START) / 700) : 1;
+      bgCtx.save();
+      bgCtx.globalAlpha = ln.alpha * Math.min(tp * 4, 1) * fadeOut;
+      bgCtx.strokeStyle = i % 4 === 0 ? GOLD_LIGHT : GOLD;
+      bgCtx.lineWidth = ln.thick;
+      bgCtx.shadowBlur = 6;
+      bgCtx.shadowColor = GOLD;
+      bgCtx.beginPath();
+      bgCtx.moveTo(fx1 * W, fy1 * H);
+      bgCtx.lineTo(fx2 * W, fy2 * H);
+      bgCtx.stroke();
+      bgCtx.restore();
+    });
+
+    /* ── Logo assembly canvas ── */
+    logoCtx.clearRect(0, 0, S, S);
+
+    // Overall glow underneath as segments build
+    const buildProg = Math.max(0, Math.min(
+      (elapsed - ASSEMBLE_START) / (ASSEMBLE_END - ASSEMBLE_START), 1
+    ));
+    if (buildProg > 0) {
+      const cg = logoCtx.createRadialGradient(CX, CY, 0, CX, CY, 90);
+      cg.addColorStop(0, `rgba(200,150,12,${0.08 * buildProg})`);
+      cg.addColorStop(1, 'rgba(200,150,12,0)');
+      logoCtx.fillStyle = cg;
+      logoCtx.fillRect(0, 0, S, S);
+    }
+
+    // Draw each segment flying in from its random origin to its final position
+    particles.forEach((p, idx) => {
+      const segStart = ASSEMBLE_START / 1000 + p.delay;
+      const lp = Math.max(0, (elapsed / 1000 - segStart) / p.dur);
+      const tp = Math.min(lp, 1);
+      if (tp <= 0) return;
+
+      const e = easeOut(tp);
+      // Start: midpoint of segment offset by random spawn
+      const mx = (p.seg.x1 + p.seg.x2) / 2;
+      const my = (p.seg.y1 + p.seg.y2) / 2;
+      const sx1 = p.seg.x1 - mx + p.ox;
+      const sy1 = p.seg.y1 - my + p.oy;
+      const sx2 = p.seg.x2 - mx + p.ox;
+      const sy2 = p.seg.y2 - my + p.oy;
+      // Interpolate from spawn to final
+      const cx1 = lerp(sx1, p.seg.x1, e);
+      const cy1 = lerp(sy1, p.seg.y1, e);
+      const cx2 = lerp(sx2, p.seg.x2, e);
+      const cy2 = lerp(sy2, p.seg.y2, e);
+
+      // Fade out assembly lines as PNG fades in
+      const assemblyFadeOut = elapsed > PNG_FADE_START
+        ? Math.max(0, 1 - (elapsed - PNG_FADE_START) / 600) : 1;
+      const alpha = p.alpha * Math.min(tp * 2, 1) * assemblyFadeOut;
+
+      logoCtx.save();
+      logoCtx.globalAlpha = alpha;
+      logoCtx.strokeStyle = idx % 5 === 0 ? GOLD_LIGHT : (idx % 3 === 0 ? GOLD : GOLD_DIM);
+      logoCtx.lineWidth = p.thick;
+      logoCtx.lineCap = 'round';
+      logoCtx.shadowBlur = tp > 0.9 ? 10 : 4;
+      logoCtx.shadowColor = GOLD_LIGHT;
+      logoCtx.beginPath();
+      logoCtx.moveTo(cx1, cy1);
+      logoCtx.lineTo(cx2, cy2);
+      logoCtx.stroke();
+      // Endpoint dot (spark)
+      if (tp < 1) {
+        logoCtx.fillStyle = GOLD_LIGHT;
+        logoCtx.globalAlpha = alpha * 0.8;
+        logoCtx.beginPath();
+        logoCtx.arc(cx2, cy2, p.thick * 1.5, 0, Math.PI * 2);
+        logoCtx.fill();
+      }
+      logoCtx.restore();
+    });
+
+    /* ── PNG logo fades in over assembled lines ── */
+    if (elapsed >= PNG_FADE_START) {
+      const pf = Math.min((elapsed - PNG_FADE_START) / 800, 1);
+      logoImg.style.opacity = pf;
+      // Fade the assembly canvas out simultaneously
+      logoCanvas.style.opacity = Math.max(0, 1 - pf);
+      if (elapsed >= PNG_FADE_START + 300) {
+        brandTx.style.opacity = Math.min((elapsed - PNG_FADE_START - 300) / 600, 1);
+      }
+    }
+
+    /* ── Fade entire loading screen out ── */
+    if (elapsed >= SCREEN_FADE_START) {
+      const sf = (elapsed - SCREEN_FADE_START) / (TOTAL - SCREEN_FADE_START);
+      const screen = document.getElementById('loading-screen');
+      screen.style.opacity = Math.max(0, 1 - sf);
+      if (sf >= 1) {
+        screen.style.display = 'none';
+        document.body.style.overflow = '';
+        return;
+      }
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(frame);
+})();
+
+/* ──────────────────────────────────────────────
+   NAVIGATION SCROLL
+────────────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('main-nav');
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ──────────────────────────────────────────────
+   MOBILE MENU
+────────────────────────────────────────────── */
+document.getElementById('menuBtn').addEventListener('click', () => {
+  document.getElementById('mobile-menu').classList.add('open');
+});
+document.getElementById('closeMenu').addEventListener('click', () => {
+  document.getElementById('mobile-menu').classList.remove('open');
+});
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+
+/* ──────────────────────────────────────────────
+   SCROLL REVEAL
+────────────────────────────────────────────── */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('revealed');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+  revealObserver.observe(el);
+});
+
+/* ──────────────────────────────────────────────
+   PARTICLES IN HERO
+────────────────────────────────────────────── */
+(function () {
+  const canvas = document.getElementById('particles-canvas');
+  if (!canvas) return;
+  const ctx    = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x  = Math.random() * W;
+      this.y  = Math.random() * H;
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = -0.2 - Math.random() * 0.4;
+      this.life = 0;
+      this.maxLife = 180 + Math.random() * 200;
+      this.size = 0.5 + Math.random() * 1.2;
+    }
+    update() {
+      this.x  += this.vx;
+      this.y  += this.vy;
+      this.life++;
+      if (this.life > this.maxLife || this.y < -5) this.reset();
+    }
+    draw() {
+      const t = this.life / this.maxLife;
+      const a = t < 0.2 ? t / 0.2 : t > 0.8 ? (1 - t) / 0.2 : 1;
+      ctx.globalAlpha = a * 0.4;
+      ctx.fillStyle   = '#c8960c';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 60; i++) {
+    const p = new Particle();
+    p.life = Math.floor(Math.random() * p.maxLife);
+    particles.push(p);
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* ──────────────────────────────────────────────
+   SMOOTH SCROLL FOR CTAs
+────────────────────────────────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href');
+    if (id === '#') return;
+    e.preventDefault();
+    const el = document.querySelector(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+/* ──────────────────────────────────────────────
+   FORM SUBMIT
+────────────────────────────────────────────── */
+function handleFormSubmit(e) {
+  e.preventDefault();
+  const form    = document.getElementById('bookingForm');
+  const success = document.getElementById('formSuccess');
+  form.style.opacity = '0';
+  form.style.transition = 'opacity 0.5s ease';
+  setTimeout(() => {
+    form.style.display = 'none';
+    success.style.display = 'block';
+    success.style.opacity  = '0';
+    success.style.transition = 'opacity 0.5s ease';
+    requestAnimationFrame(() => { success.style.opacity = '1'; });
+  }, 500);
+}
+
+/* ──────────────────────────────────────────────
+   CSS KEYFRAME: scrollDrop
+────────────────────────────────────────────── */
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes scrollDrop {
+    0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+    50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+    100% { transform: scaleY(1); transform-origin: top; opacity: 0; }
+  }
+`;
+document.head.appendChild(style);
+
+/* ──────────────────────────────────────────────
+   STAGGERED STAT COUNTER ANIMATION
+────────────────────────────────────────────── */
+function animateCounter(el, target, suffix='', duration=1800) {
+  let start = null;
+  const step = ts => {
+    if (!start) start = ts;
+    const progress = Math.min((ts - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const val = Math.floor(ease * target);
+    el.innerHTML = val + suffix + '<span style="font-size:14px;">+</span>';
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const counters = e.target.querySelectorAll('[data-count]');
+      counters.forEach(c => {
+        animateCounter(c, +c.dataset.count, c.dataset.suffix || '');
+      });
+      statsObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+const statsSection = document.querySelector('#about .grid.grid-cols-2.md\\:grid-cols-4');
+if (statsSection) statsObserver.observe(statsSection);
+
+/* ══════════════════════════════════════════════
+   VENUE MODAL
+══════════════════════════════════════════════ */
+const VENUE_DATA = {
+  garden: {
+    title: 'Chaudhary Garden',
+    tag: 'Outdoor Wedding Venue',
+    status: '<div class="badge-active"><span class="dot"></span>Operational</div>',
+    desc: '"An open-air sanctuary where manicured landscapes, grand floral archways, and the gentlest evening breeze conspire to make your celebration utterly unforgettable."',
+    desc2: 'Chaudhary Garden spans across a vast, meticulously landscaped estate, offering a breathtaking open-air backdrop for weddings, receptions, and grand celebrations. With capacity for thousands of guests and state-of-the-art lighting infrastructure, the Garden transforms into a glowing, ethereal world after dark — every corner crafted to be a photograph.',
+    features: [
+      { val: '5,000+', label: 'Guest Capacity' },
+      { val: 'Open Air', label: 'Venue Type' },
+      { val: 'Full Day', label: 'Availability' },
+      { val: 'Bespoke', label: 'Décor Options' },
+    ],
+    images: [
+      'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1510076857177-7470076d4098?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1524863479829-916d8e77f114?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1543007631-283050bb3e8c?w=1400&q=85&auto=format&fit=crop',
+    ],
+  },
+  guesthouse: {
+    title: 'Chaudhary Guest House',
+    tag: 'Indoor Banquet & Stay',
+    status: '<div class="badge-active"><span class="dot"></span>Operational</div>',
+    desc: '"Heritage architecture illuminated by warm, curated light — an intimate grandeur that only Chaudhary Guest House can offer for your most cherished celebrations."',
+    desc2: 'The Chaudhary Guest House is a distinguished blend of heritage character and contemporary luxury. Its grand indoor banquet hall accommodates large gatherings in refined comfort, while the guest suites offer a seamless, exclusive stay experience for your closest family and visiting dignitaries. Every surface speaks of care and craftsmanship.',
+    features: [
+      { val: '2,000+', label: 'Seating Capacity' },
+      { val: 'Indoor + Stay', label: 'Venue Type' },
+      { val: '24 / 7', label: 'Concierge' },
+      { val: 'Heritage', label: 'Architecture' },
+    ],
+    images: [
+      'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1529543544282-ea669407fca3?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1400&q=85&auto=format&fit=crop',
+    ],
+  },
+  signature: {
+    title: 'CHG Signature Venue',
+    tag: 'Future Flagship — Coming Soon',
+    status: '<div style="display:inline-flex;align-items:center;gap:6px;font-family:\'Jost\',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(200,150,12,0.6);border:1px solid rgba(200,150,12,0.2);padding:4px 10px;"><span style="width:5px;height:5px;border-radius:50%;background:rgba(200,150,12,0.5);"></span>Future Flagship</div>',
+    desc: '"Launching Soon — A New Benchmark in Luxury Events. Our most ambitious project, conceived for those who demand nothing less than the extraordinary."',
+    desc2: 'The CHG Signature Venue is currently in its final design and development phase. It will stand as the pinnacle of luxury event infrastructure in the region — a multi-zone estate with cascading water features, a dramatic arrival forecourt, private bridal suites, and a main ballroom of unprecedented scale. Register your interest now to be among the first to experience it.',
+    features: [
+      { val: '7,500+', label: 'Guest Capacity' },
+      { val: 'Multi-Zone', label: 'Estate Layout' },
+      { val: '2025–26', label: 'Launch Window' },
+      { val: 'Flagship', label: 'Tier' },
+    ],
+    images: [
+      'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1504196606672-aef5c9cefc92?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=85&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1543007631-283050bb3e8c?w=1400&q=85&auto=format&fit=crop',
+    ],
+  },
+};
+
+let currentVenue = null;
+let currentImgIdx = 0;
+
+function openVenueModal(venueKey) {
+  const data = VENUE_DATA[venueKey];
+  if (!data) return;
+  currentVenue = venueKey;
+  currentImgIdx = 0;
+
+  // Populate content
+  document.getElementById('modal-title').textContent = data.title;
+  document.getElementById('modal-tag').textContent = data.tag;
+  document.getElementById('modal-status').innerHTML = data.status;
+  document.getElementById('modal-desc').textContent = data.desc;
+  document.getElementById('modal-desc2').textContent = data.desc2;
+
+  // Features grid
+  const featEl = document.getElementById('modal-features');
+  featEl.innerHTML = data.features.map((f, i) => `
+    <div class="p-6 text-center" style="${i < data.features.length-1 ? 'border-right:1px solid rgba(200,150,12,0.1);' : ''}">
+      <div class="gold-text" style="font-family:'Cinzel',serif;font-size:24px;font-weight:600;margin-bottom:6px;">${f.val}</div>
+      <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(200,150,12,0.3),transparent);margin:8px auto;width:40px;"></div>
+      <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(250,245,232,0.4);">${f.label}</div>
+    </div>
+  `).join('');
+
+  // CTA label
+  document.getElementById('modal-cta').textContent =
+    venueKey === 'signature' ? 'Register Interest' : 'Enquire About This Venue';
+
+  // Build thumbnails
+  const thumbsEl = document.getElementById('modal-thumbs');
+  thumbsEl.innerHTML = data.images.map((src, i) =>
+    `<img src="${src}" class="modal-thumb${i===0?' active':''}" onclick="setModalImg(${i})" alt="Venue photo ${i+1}" loading="lazy" />`
+  ).join('');
+
+  // Hero image
+  setModalImg(0);
+  document.getElementById('modal-img-total').textContent = data.images.length;
+
+  // Open
+  const modal = document.getElementById('venue-modal');
+  modal.classList.add('open');
+  modal.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+function setModalImg(idx) {
+  const data = VENUE_DATA[currentVenue];
+  if (!data) return;
+  idx = ((idx % data.images.length) + data.images.length) % data.images.length;
+  currentImgIdx = idx;
+
+  const heroImg = document.getElementById('modal-hero-img');
+  heroImg.style.opacity = '0';
+  setTimeout(() => {
+    heroImg.src = data.images[idx];
+    heroImg.alt = data.title + ' — photo ' + (idx + 1);
+    heroImg.style.opacity = '1';
+  }, 200);
+
+  document.getElementById('modal-img-index').textContent = idx + 1;
+
+  // Update thumb active state
+  document.querySelectorAll('.modal-thumb').forEach((el, i) => {
+    el.classList.toggle('active', i === idx);
+  });
+  // Scroll thumb into view
+  const activeThumb = document.querySelectorAll('.modal-thumb')[idx];
+  if (activeThumb) activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
+function modalNav(dir) {
+  setModalImg(currentImgIdx + dir);
+}
+
+function closeVenueModal() {
+  document.getElementById('venue-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  currentVenue = null;
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  const modal = document.getElementById('venue-modal');
+  if (modal.classList.contains('open')) {
+    if (e.key === 'ArrowRight') modalNav(1);
+    if (e.key === 'ArrowLeft')  modalNav(-1);
+    if (e.key === 'Escape')     closeVenueModal();
+  }
+  if (document.getElementById('img-lightbox').classList.contains('open')) {
+    if (e.key === 'Escape') closeLightbox();
+  }
+});
+
+/* Lightbox */
+function openLightbox() {
+  const data = VENUE_DATA[currentVenue];
+  if (!data) return;
+  document.getElementById('lightbox-img').src = data.images[currentImgIdx];
+  document.getElementById('img-lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('img-lightbox').classList.remove('open');
+}
+</script>
+</body>
+</html>
